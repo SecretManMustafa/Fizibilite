@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📞 Telefon Rehberi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📞 Telefon Rehberi</h1>
+        </header>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="showAddForm()">+ Kişi Ekle</button>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Kişi ara..." onkeyup="searchKisi()">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+
+        <!-- Kişi Ekleme/Düzenleme Formu -->
+        <div id="formModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeForm()">&times;</span>
+                <h2 id="formTitle">Kişi Ekle</h2>
+                <form id="kisiForm" onsubmit="saveKisi(event)">
+                    <input type="hidden" id="kisiId">
+                    <div class="form-group">
+                        <label for="ad">Ad:</label>
+                        <input type="text" id="ad" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="soyad">Soyad:</label>
+                        <input type="text" id="soyad" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefon">Telefon:</label>
+                        <input type="tel" id="telefon" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success">Kaydet</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeForm()">İptal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Kişiler Listesi -->
+        <div class="kisiler-listesi" id="kisilerListesi">
+            <div class="loading">Yükleniyor...</div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+
