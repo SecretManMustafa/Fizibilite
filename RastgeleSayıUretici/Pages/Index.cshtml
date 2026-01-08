@@ -1,0 +1,86 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Rastgele Sayı Üretici";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Rastgele Sayı Üretici</h2>
+                </div>
+                <div class="card-body">
+                    <form id="numberGeneratorForm">
+                        <div class="mb-3">
+                            <label for="minValue" class="form-label">Minimum Değer:</label>
+                            <input type="number" class="form-control" id="minValue" name="minValue" value="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="maxValue" class="form-label">Maksimum Değer:</label>
+                            <input type="number" class="form-control" id="maxValue" name="maxValue" value="100" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="count" class="form-label">Üretilecek Sayı Adedi:</label>
+                            <input type="number" class="form-control" id="count" name="count" value="10" min="1" max="1000" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Sayıları Üret ve Kaydet</button>
+                    </form>
+                    
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h5>Üretilen Sayılar:</h5>
+                        <div id="numbersList" class="alert alert-info"></div>
+                        <div id="saveStatus" class="alert"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('numberGeneratorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const minValue = parseInt(document.getElementById('minValue').value);
+            const maxValue = parseInt(document.getElementById('maxValue').value);
+            const count = parseInt(document.getElementById('count').value);
+            
+            if (minValue >= maxValue) {
+                alert('Minimum değer maksimum değerden küçük olmalıdır!');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ minValue, maxValue, count })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('numbersList').textContent = data.numbers.join(', ');
+                    document.getElementById('saveStatus').className = 'alert alert-success';
+                    document.getElementById('saveStatus').textContent = `Sayılar başarıyla kaydedildi: ${data.filePath}`;
+                    document.getElementById('results').style.display = 'block';
+                } else {
+                    document.getElementById('saveStatus').className = 'alert alert-danger';
+                    document.getElementById('saveStatus').textContent = 'Hata: ' + data.error;
+                    document.getElementById('results').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('saveStatus').className = 'alert alert-danger';
+                document.getElementById('saveStatus').textContent = 'Hata: ' + error.message;
+                document.getElementById('results').style.display = 'block';
+            }
+        });
+    </script>
+}
+
+
